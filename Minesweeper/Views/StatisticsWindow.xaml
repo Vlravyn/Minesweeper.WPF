@@ -1,0 +1,107 @@
+﻿<Window
+    x:Class="Minesweeper.Views.StatisticsWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:converters="clr-namespace:Minesweeper.Converters"
+    xmlns:core="clr-namespace:Minesweeper.Core.DataModels;assembly=Minesweeper.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Minesweeper.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:Minesweeper.ViewModels"
+    d:DataContext="{d:DesignInstance Type=viewModels:StatisticsViewModel,
+                                     IsDesignTimeCreatable=True}"
+    SizeToContent="WidthAndHeight"
+    mc:Ignorable="d">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <ComboBox Name="comboBox" Margin="5">
+                <ComboBoxItem
+                    Content="{Binding RelativeSource={RelativeSource Self}, Path=Tag, Converter={converters:EnumToStringConverter}}"
+                    IsSelected="True"
+                    Tag="{Binding Source={x:Static core:GameDifficulty.Easy}}">
+                    <b:Interaction.Triggers>
+                        <b:EventTrigger EventName="Selected">
+                            <b:InvokeCommandAction Command="{Binding SelectedDifficultyCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem, Mode=FindAncestor}, Path=Tag}" />
+                        </b:EventTrigger>
+                    </b:Interaction.Triggers>
+                </ComboBoxItem>
+                <ComboBoxItem
+                    Content="{Binding RelativeSource={RelativeSource Self}, Path=Tag, Converter={converters:EnumToStringConverter}}"
+                    IsSelected="True"
+                    Tag="{Binding Source={x:Static core:GameDifficulty.Medium}}">
+                    <b:Interaction.Triggers>
+                        <b:EventTrigger EventName="Selected">
+                            <b:InvokeCommandAction Command="{Binding SelectedDifficultyCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem, Mode=FindAncestor}, Path=Tag}" />
+                        </b:EventTrigger>
+                    </b:Interaction.Triggers>
+                </ComboBoxItem>
+                <ComboBoxItem
+                    Content="{Binding RelativeSource={RelativeSource Self}, Path=Tag, Converter={converters:EnumToStringConverter}}"
+                    IsSelected="True"
+                    Tag="{Binding Source={x:Static core:GameDifficulty.Hard}}">
+                    <b:Interaction.Triggers>
+                        <b:EventTrigger EventName="Selected">
+                            <b:InvokeCommandAction Command="{Binding SelectedDifficultyCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem, Mode=FindAncestor}, Path=Tag}" />
+                        </b:EventTrigger>
+                    </b:Interaction.Triggers>
+                </ComboBoxItem>
+            </ComboBox>
+
+            <StackPanel
+                Margin="5"
+                DataContext="{Binding SelectedDifficultyStats}"
+                Orientation="Vertical">
+                <TextBlock>
+                    <Run Text="Games played:" />
+                    <Run Text="{Binding GamesPlayed, Mode=OneWay}" />
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="Games won:" />
+                    <Run Text="{Binding GamesWon, Mode=OneWay}" />
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="Winning percentage:" />
+                    <Run Text="{Binding WinningPercentage, Mode=OneWay}" />
+                    <Run Text="%" />
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="Longest winning streak:" />
+                    <Run Text="{Binding LongestWinningStreak, Mode=OneWay}" />
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="Longest losing streak:" />
+                    <Run Text="{Binding LongestLosingStreak, Mode=OneWay}" />
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="Current winning streak:" />
+                    <Run Text="{Binding CurrentWinningStreak, Mode=OneWay}" />
+                </TextBlock>
+            </StackPanel>
+        </StackPanel>
+
+        <Grid Grid.Row="1" Margin="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+
+            <Button
+                Margin="2"
+                Grid.Column="1"
+                Click="Button_Click"
+                Content="Close" />
+            <Button
+                Margin="2"
+                Grid.Column="2"
+                Command="{Binding ResetStatsCommand}"
+                Content="Reset all stats" />
+        </Grid>
+    </Grid>
+</Window>

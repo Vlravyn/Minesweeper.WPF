@@ -1,0 +1,99 @@
+﻿<Window
+    x:Class="Minesweeper.Views.GameEndWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:Minesweeper.ViewModels"
+    Title="GameEndWindow"
+    d:DataContext="{d:DesignInstance Type=viewModels:GameEndViewModel,
+                                     IsDesignTimeCreatable=True}"
+    SizeToContent="WidthAndHeight"
+    mc:Ignorable="d">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            Text="{Binding WinOrLoseText}" />
+
+        <Grid Grid.Column="0" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0">
+                <Run Text="Time:" />
+                <Run Text="{Binding TimeTaken}" />
+                <Run Text="seconds" />
+            </TextBlock>
+            <TextBlock Grid.Row="1">
+                <Run Text="Best time:" />
+                <Run Text="{Binding BestTime, Mode=OneWay}" />
+                <Run Text="seconds" />
+            </TextBlock>
+            <TextBlock Grid.Row="2">
+                <Run Text="Games played:" />
+                <Run Text="{Binding GamesPlayed, Mode=OneWay}" />
+            </TextBlock>
+
+            <TextBlock Grid.Row="3">
+                <Run Text="Games won:" />
+                <Run Text="{Binding GamesWon, Mode=OneWay}" />
+            </TextBlock>
+        </Grid>
+
+
+        <Grid Grid.Column="1" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                Grid.Row="0"
+                HorizontalAlignment="Center">
+                <Run Text="Date:" />
+                <Run Text="{Binding Date, StringFormat={}{0:dd/MM/yyyy}, Mode=OneWay}" />
+            </TextBlock>
+            <TextBlock
+                Grid.Row="4"
+                HorizontalAlignment="Center">
+                <Run Text="Winning Percentage:" />
+                <Run Text="{Binding WinPercentage, Mode=OneWay}" />
+                <Run Text="%" />
+            </TextBlock>
+        </Grid>
+
+
+
+
+        <Button
+            Grid.Row="3"
+            Grid.Column="0"
+            Command="{Binding ExitGameCommand}"
+            HorizontalAlignment="Center"
+            Content="Exit game" />
+        <Button
+            Grid.Row="3"
+            Grid.Column="1"
+            Command="{Binding StartNewGameCommand}"
+            HorizontalAlignment="Center"
+            Content="Play new game" />
+    </Grid>
+</Window>
