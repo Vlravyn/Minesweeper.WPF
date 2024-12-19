@@ -45,10 +45,12 @@ namespace Minesweeper
                services.AddSingleton<GameWindowViewModel>();
                services.AddSingleton<GameEndViewModel>();
                services.AddSingleton<StatisticsViewModel>();
+               services.AddSingleton<ChangeDifficultyViewModel>();
 
                services.AddSingleton<GameWindow>();
                services.AddSingleton<GameEndWindow>();
                services.AddTransient<StatisticsWindow>();
+               services.AddTransient<ChangeDifficultyPage>();
            })
            .Build();
 

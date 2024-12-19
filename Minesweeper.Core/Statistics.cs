@@ -19,19 +19,19 @@ namespace Minesweeper.Core
         };
 
         /// <summary>
-        /// _statistics for <see cref="GameDifficulty.Easy"/>
+        /// Statistics for <see cref="GameDifficulty.Easy"/>
         /// </summary>
         public StatsForDifficultyHost EasyDifficulty { get; set; }
 
         /// <summary>
-        /// _statistics for <see cref="GameDifficulty.Medium"/>
+        /// Statistics for <see cref="GameDifficulty.Medium"/>
         /// </summary>
-        public StatsForDifficultyHost MediumDifficulty { get; private set; }
+        public StatsForDifficultyHost MediumDifficulty { get; set; }
 
         /// <summary>
-        /// _statistics for <see cref="GameDifficulty.Hard"/>
+        /// Statistics for <see cref="GameDifficulty.Hard"/>
         /// </summary>
-        public StatsForDifficultyHost HardDifficulty { get; private set; }
+        public StatsForDifficultyHost HardDifficulty { get; set; }
 
         /// <summary>
         /// Creates a new instance of <see cref="Statistics"/>
@@ -70,7 +70,6 @@ namespace Minesweeper.Core
             var json = JsonSerializer.Serialize(this, jsonSerializerOptions);
             File.WriteAllText(StatisticsFileLocation, json);
         }
-
 
         public void ResetStatistics()
         {

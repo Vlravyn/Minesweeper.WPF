@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:Minesweeper.ViewModels"
-    Title="GameEndWindow"
+    Title="{Binding Title}"
     d:DataContext="{d:DesignInstance Type=viewModels:GameEndViewModel,
                                      IsDesignTimeCreatable=True}"
     SizeToContent="WidthAndHeight"
@@ -28,7 +28,7 @@
             HorizontalAlignment="Center"
             Text="{Binding WinOrLoseText}" />
 
-        <Grid Grid.Column="0" Grid.Row="1">
+        <Grid Grid.Row="1" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
@@ -56,44 +56,36 @@
             </TextBlock>
         </Grid>
 
-
-        <Grid Grid.Column="1" Grid.Row="1">
+        <Grid Grid.Row="1" Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <TextBlock
-                Grid.Row="0"
-                HorizontalAlignment="Center">
+            <TextBlock Grid.Row="0" HorizontalAlignment="Center">
                 <Run Text="Date:" />
                 <Run Text="{Binding Date, StringFormat={}{0:dd/MM/yyyy}, Mode=OneWay}" />
             </TextBlock>
-            <TextBlock
-                Grid.Row="4"
-                HorizontalAlignment="Center">
+            <TextBlock Grid.Row="4" HorizontalAlignment="Center">
                 <Run Text="Winning Percentage:" />
                 <Run Text="{Binding WinPercentage, Mode=OneWay}" />
                 <Run Text="%" />
             </TextBlock>
         </Grid>
 
-
-
-
         <Button
             Grid.Row="3"
             Grid.Column="0"
-            Command="{Binding ExitGameCommand}"
             HorizontalAlignment="Center"
+            Command="{Binding ExitGameCommand}"
             Content="Exit game" />
         <Button
             Grid.Row="3"
             Grid.Column="1"
-            Command="{Binding StartNewGameCommand}"
             HorizontalAlignment="Center"
+            Command="{Binding StartNewGameCommand}"
             Content="Play new game" />
     </Grid>
 </Window>

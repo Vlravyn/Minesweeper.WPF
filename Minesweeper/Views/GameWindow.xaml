@@ -8,7 +8,7 @@
     xmlns:local="clr-namespace:Minesweeper.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:Minesweeper.ViewModels"
-    Title="GameWindow"
+    Title="Minesweeper"
     d:DataContext="{d:DesignInstance Type=viewModels:GameWindowViewModel}"
     SizeToContent="WidthAndHeight"
     mc:Ignorable="d">
@@ -23,11 +23,14 @@
             <MenuItem Header="Game">
                 <MenuItem Command="{Binding RestartCommand}" Header="New game" />
                 <Separator />
-                <MenuItem Header="Options" />
+                <MenuItem Header="Change difficulty" Command="{Binding ChangeDifficultyCommand}" />
                 <MenuItem Command="{Binding OpenStatisticsCommand}" Header="Statistics" />
             </MenuItem>
         </Menu>
-        <Grid Grid.Row="1" Margin="10,0,10,0">
+        <Grid
+            Grid.Row="1"
+            Margin="10,0,10,0"
+            TextElement.FontSize="16">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -78,14 +81,22 @@
                             <b:DataTrigger Binding="{Binding TileState}" Value="{x:Static dataModels:TileState.Flagged}">
                                 <b:ChangePropertyAction PropertyName="Content">
                                     <b:ChangePropertyAction.Value>
-                                        <Image Source="pack://application:,,,/Minesweeper;component/Resources/Images/flag.png" />
+                                        <Image
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Stretch"
+                                            Source="pack://application:,,,/Minesweeper;component/Resources/Images/flag.png"
+                                            Stretch="Fill" />
                                     </b:ChangePropertyAction.Value>
                                 </b:ChangePropertyAction>
                             </b:DataTrigger>
                             <b:DataTrigger Binding="{Binding TileState}" Value="{x:Static dataModels:TileState.QuestionMarked}">
                                 <b:ChangePropertyAction PropertyName="Content">
                                     <b:ChangePropertyAction.Value>
-                                        <Image Source="pack://application:,,,/Minesweeper;component/Resources/Images/questionMark.png" />
+                                        <Image
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Stretch"
+                                            Source="pack://application:,,,/Minesweeper;component/Resources/Images/questionMark.png"
+                                            Stretch="Fill" />
                                     </b:ChangePropertyAction.Value>
                                 </b:ChangePropertyAction>
                             </b:DataTrigger>

@@ -143,7 +143,6 @@ namespace Minesweeper.Core
 
                     if (currentDifficulty.BestTime is null || (ulong)game.Stopwatch.Elapsed.TotalSeconds < currentDifficulty.BestTime)
                         currentDifficulty.BestTime = (ulong)game.Stopwatch.Elapsed.TotalSeconds;
-
                 }
                 else
                 {

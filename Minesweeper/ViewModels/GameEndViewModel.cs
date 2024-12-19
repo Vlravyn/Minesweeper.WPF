@@ -19,6 +19,7 @@ namespace Minesweeper.ViewModels
 
         //specifies that the user tries to play the game again if true and exit the game if false.
         private bool playAgainOrExit = true;
+
         private readonly Statistics _statistics;
 
         /// <summary>
@@ -71,15 +72,6 @@ namespace Minesweeper.ViewModels
             set => SetProperty(ref _winPercentage, value);
         }
 
-        public RelayCommand ExitGameCommand => new(ExitGame);
-        public RelayCommand StartNewGameCommand => new(StartNewGame);
-
-        private void StartNewGame()
-        {
-            playAgainOrExit = true;
-            Close.Invoke();
-        }
-
         public object? Title
         {
             get => _title;
@@ -89,16 +81,25 @@ namespace Minesweeper.ViewModels
         public DialogResult DialogResult { get; set; } = DialogResult.OK;
         public Action Close { get; set; }
 
-        private void ExitGame()
-        {
-            playAgainOrExit = false;
-            Close.Invoke();
-        }
+        public RelayCommand ExitGameCommand => new(ExitGame);
+        public RelayCommand StartNewGameCommand => new(StartNewGame);
 
         public GameEndViewModel(Statistics statistics)
         {
             WinOrLoseText = "";
             _statistics = statistics;
+        }
+
+        private void StartNewGame()
+        {
+            playAgainOrExit = true;
+            Close.Invoke();
+        }
+
+        private void ExitGame()
+        {
+            playAgainOrExit = false;
+            Close.Invoke();
         }
 
         public void OnClosing()
@@ -122,7 +123,7 @@ namespace Minesweeper.ViewModels
 
             TimeTaken = parameters?.First(t => t.Key == "TimeTaken").Value.ToString() ?? "0";
 
-            if(parameters?.First(t => t.Key == nameof(GameDifficultyHost)).Value is GameDifficultyHost difficulty)
+            if (parameters?.First(t => t.Key == nameof(GameDifficultyHost)).Value is GameDifficultyHost difficulty)
             {
                 StatsForDifficultyHost? currentDifficulty = difficulty.DifficultyType switch
                 {
@@ -157,9 +158,6 @@ namespace Minesweeper.ViewModels
             return parameters;
         }
 
-        public bool CanClose()
-        {
-            return true;
-        }
+        public bool CanClose() => true;
     }
 }

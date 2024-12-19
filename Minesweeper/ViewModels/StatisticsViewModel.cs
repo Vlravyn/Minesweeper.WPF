@@ -6,15 +6,14 @@ using MvvmEssentials.Core.Dialog;
 
 namespace Minesweeper.ViewModels
 {
-    public class StatisticsViewModel : ObservableObject, IDialogAware
+    public class StatisticsViewModel : ObservableObject
     {
         private Statistics _statistics;
+        private StatsForDifficultyHost _selectedDifficultyStats;
 
         public object? Title => "Statistics";
 
-        public DialogResult DialogResult { get; set; }
-
-        private StatsForDifficultyHost _selectedDifficultyStats;
+        public DialogResult DialogResult { get; set; } = DialogResult.OK;
 
         public StatsForDifficultyHost SelectedDifficultyStats
         {
@@ -22,11 +21,10 @@ namespace Minesweeper.ViewModels
             set => SetProperty(ref _selectedDifficultyStats, value);
         }
 
+        public Action Close { get; set; }
 
         public RelayCommand<GameDifficulty> SelectedDifficultyCommand => new(UpdateScoredForSelectedDifficulty);
         public RelayCommand ResetStatsCommand => new(_statistics.ResetStatistics);
-
-        public Action Close { get; set; }
 
         public StatisticsViewModel(Statistics statistics)
         {
@@ -48,16 +46,6 @@ namespace Minesweeper.ViewModels
         public IDialogParameters? ResultParameters()
         {
             return null;
-        }
-
-        public void OnClosing()
-        {
-        }
-
-        public bool CanClose() => true;
-
-        public void OnOpened(IDialogParameters? parameters)
-        {
         }
     }
 }

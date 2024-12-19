@@ -9,18 +9,21 @@ using MvvmEssentials.Navigation.WPF.Dialog;
 using System.IO;
 using System.Media;
 using System.Windows;
-using System.Windows.Automation;
 using System.Windows.Threading;
 
 namespace Minesweeper.ViewModels
 {
-    public class GameWindowViewModel : ObservableObject
+    public class GameWindowViewModel : ObservableObject, IViewAware
     {
         private readonly IDialogService dialogService;
         private readonly Statistics statistics;
         private Game _game;
         private string _currentTime;
+        private bool _showAllBombs;
 
+        /// <summary>
+        /// The timer to invoke an event periodically to update the time according to <see cref="Game.Stopwatch"/> time.
+        /// </summary>
         private DispatcherTimer dispatcherTimer;
 
         public Game Game
@@ -29,8 +32,10 @@ namespace Minesweeper.ViewModels
             set => SetProperty(ref _game, value);
         }
 
-        private bool _showAllBombs;
 
+        /// <summary>
+        /// Sets whether all the locations of the bombs should be shown.
+        /// </summary>
         public bool ShowAllBombs
         {
             get => _showAllBombs;
@@ -43,10 +48,13 @@ namespace Minesweeper.ViewModels
             set => SetProperty(ref _currentTime, value);
         }
 
-        public RelayCommand RestartCommand => new(RestartGame);
+        public RelayCommand RestartCommand => new(() => RestartGame());
+        public RelayCommand ChangeDifficultyCommand => new(OpenChangeDifficultyView);
         public RelayCommand<Tile> OpenTileCommand => new(Game.OpenTile);
         public RelayCommand<Tile> CycleCoveredStatesCommand => new(Game.CycleUncoveredStates);
         public RelayCommand OpenStatisticsCommand => new(OpenStatistics);
+
+        public Action Close { get; set; }
 
         /// <summary>
         /// Creates an instance of <see cref="GameWindowViewModel"/>
@@ -56,14 +64,14 @@ namespace Minesweeper.ViewModels
         {
             this.dialogService = dialogService;
             this.statistics = statistics;
-
-            InitializeGame();
-            new SoundPlayer(new MemoryStream(Properties.Resources.GameStartAudio)).Play();
         }
-
-        private void InitializeGame()
+        /// <summary>
+        /// Initializes a new game.
+        /// </summary>
+        /// <param name="difficulty">the difficulty for this game.</param>
+        private void InitializeGame(GameDifficultyHost difficulty)
         {
-            Game = new Game(GameDifficultyHost.Easy, statistics);
+            Game = new Game(difficulty, statistics);
             Game.GameEnd += OnGameEnd;
 
             //Setting up dispatcher timer to update time according to the stopwatch inside the game.
@@ -78,12 +86,12 @@ namespace Minesweeper.ViewModels
         /// <summary>
         /// Restarts the game
         /// </summary>
-        private void RestartGame()
+        private void RestartGame(GameDifficultyHost? difficulty = null)
         {
             ShowAllBombs = false;
             Game.GameEnd -= OnGameEnd;
             dispatcherTimer.Tick -= UpdateTime;
-            InitializeGame();
+            InitializeGame(difficulty ?? Game.Difficulty);
         }
 
         /// <summary>
@@ -93,14 +101,53 @@ namespace Minesweeper.ViewModels
         {
             CurrentTime = Math.Floor(Game.Stopwatch.Elapsed.TotalSeconds).ToString();
         }
+
+        /// <summary>
+        /// Opens the statistics view.
+        /// </summary>
         private void OpenStatistics()
         {
+            Game.Stopwatch.Stop();
             dialogService.ShowDialog(typeof(StatisticsWindow), new DialogParameters(), (callbackParameters) => { });
+
+            if (Game.Stopwatch.ElapsedMilliseconds > 0 && !Game.Stopwatch.IsRunning)
+                Game.Stopwatch.Start();
+        }
+        /// <summary>
+        /// Opens the view which allows the difficulty to be changed.
+        /// </summary>
+        private void OpenChangeDifficultyView()
+        {
+            Game.Stopwatch.Stop();
+            dialogService.ShowDialog(ViewType.ChangeDifficulty, new DialogParameters()
+            {
+                {"currentDifficulty", Game.Difficulty}
+            }, ChangeDifficultyCallback);
+
+            if (Game.Stopwatch.ElapsedMilliseconds > 0 && !Game.Stopwatch.IsRunning)
+                Game.Stopwatch.Start();
         }
 
+        /// <summary>
+        /// Callback method after the change difficulty view is closed.
+        /// </summary>
+        /// <param name="parameters">the parameters passed back from the view.</param>
+        private void ChangeDifficultyCallback(IDialogParameters? parameters)
+        {
+            var chosenDifficulty = parameters?.FirstOrDefault(t => t.Key == "newDifficulty").Value;
+
+            if (chosenDifficulty is GameDifficultyHost cd)
+                RestartGame(cd);
+        }
+
+        /// <summary>
+        /// Run when the game ends.
+        /// </summary>
+        /// <param name="sender">the object that invoked this method.</param>
+        /// <param name="e">the event args for this method</param>
         private void OnGameEnd(object? sender, GameEndEventArgs e)
         {
-            if(!e.GameWon)
+            if (!e.GameWon)
             {
                 new SoundPlayer(new MemoryStream(Properties.Resources.GameLoseAudio)).Play();
                 ShowAllBombs = true;
@@ -114,15 +161,19 @@ namespace Minesweeper.ViewModels
             }, GameEndDialogCallback);
         }
 
+        /// <summary>
+        /// Run when the view showing the dialog telling the user that the game has ended closes.
+        /// </summary>
+        /// <param name="parameters">the parameters that the dialog passed back to this class.</param>
         private void GameEndDialogCallback(IDialogParameters? parameters)
         {
-            if(parameters is not null)
+            if (parameters is not null)
             {
-                bool? playAgain = (bool?)parameters.FirstOrDefault(t => t.Key =="playAgain").Value;
+                bool? playAgain = (bool?)parameters.FirstOrDefault(t => t.Key == "playAgain").Value;
 
                 if (playAgain == true)
-                    RestartGame();
-                else if(playAgain is null)
+                    RestartGame(Game.Difficulty);
+                else if (playAgain is null)
                 {
                     bool? exitGame = (bool?)parameters.FirstOrDefault(t => t.Key == "exitGame").Value;
 
@@ -131,5 +182,17 @@ namespace Minesweeper.ViewModels
                 }
             }
         }
+
+        public void OnOpened(IParameters? parameters)
+        {
+            InitializeGame(GameDifficultyHost.Easy);
+            new SoundPlayer(new MemoryStream(Properties.Resources.GameStartAudio)).Play();
+        }
+
+        public void OnClosing()
+        {
+        }
+
+        public bool CanClose() => true;
     }
 }

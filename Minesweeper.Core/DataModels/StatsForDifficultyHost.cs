@@ -50,7 +50,7 @@ namespace Minesweeper.Core.DataModels
             internal set
             {
                 SetProperty(ref _gamesPlayed, value);
-                if(GamesPlayed > 0)
+                if (GamesPlayed > 0)
                     WinningPercentage = (ushort)((GamesWon / GamesPlayed) * 100);
             }
         }
@@ -82,7 +82,6 @@ namespace Minesweeper.Core.DataModels
             internal set => SetProperty(ref _bestTime, value);
         }
 
-
         /// <summary>
         /// The longest winning streak for this difficulty.
         /// </summary>
@@ -92,7 +91,6 @@ namespace Minesweeper.Core.DataModels
             internal set => SetProperty(ref _longestWinningStreak, value);
         }
 
-
         /// <summary>
         /// The longest losing streak for this difficulty.
         /// </summary>
@@ -101,7 +99,6 @@ namespace Minesweeper.Core.DataModels
             get => _longestLosingStreak;
             internal set => SetProperty(ref _longestLosingStreak, value);
         }
-
 
         /// <summary>
         /// Current winning streak on this difficulty.
